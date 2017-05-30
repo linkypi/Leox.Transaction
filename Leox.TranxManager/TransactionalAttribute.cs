@@ -5,18 +5,28 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Leox.TranxManager
 {
     public class TransactionalAttribute:MethodAspect
     {
+        private IsolationLevel _isolationLevel = IsolationLevel.ReadCommitted;
+        public IsolationLevel IsolationLevel
+        {
+            get { return _isolationLevel; }
+            set
+            {
+                _isolationLevel = value;
+            }
+        }
+
         public override void OnStart(MethodAspectArgs args)
         {
             string id = Guid.NewGuid().ToString().Replace("-", "");
             SetArgs(args, id);
             this.ExceptionStrategy = Aop.ExceptionStrategy.UnThrow;
-            Manager.NewTransaction(id);
+
+            Manager.NewTransaction(id, IsolationLevel);
         }
 
         /// <summary>

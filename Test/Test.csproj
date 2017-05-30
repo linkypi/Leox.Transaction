@@ -4,15 +4,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3902422C-95B8-4927-A04C-36ECF6EBC527}</ProjectGuid>
-    <OutputType>Library</OutputType>
+    <ProjectGuid>{0B16DBFB-4252-48AF-B173-B0978043A861}</ProjectGuid>
+    <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Leox.TranxManager</RootNamespace>
-    <AssemblyName>Leox.TranxManager</AssemblyName>
+    <RootNamespace>Test</RootNamespace>
+    <AssemblyName>Test</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -22,6 +23,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -35,7 +37,6 @@
       <HintPath>libs\Leox.Aop.dll</HintPath>
     </Reference>
     <Reference Include="System" />
-    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -44,20 +45,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connectionx.cs" />
-    <Compile Include="Manager.cs" />
-    <Compile Include="SQLHelper.cs" />
-    <Compile Include="TransactionalAttribute.cs" />
+    <Compile Include="UserDao.cs" />
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StockDao.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Leox.TranxManager\Leox.TranxManager.csproj">
+      <Project>{3902422c-95b8-4927-a04c-36ecf6ebc527}</Project>
+      <Name>Leox.TranxManager</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="libs\Leox.Aop.dll" />
-    <Content Include="libs\Leox.BuildTask.dll" />
-    <Content Include="libs\Leox.Injector.dll" />
-    <Content Include="libs\Mono.Cecil.dll" />
-    <Content Include="libs\Mono.Cecil.Mdb.dll" />
-    <Content Include="libs\Mono.Cecil.Pdb.dll" />
-    <Content Include="libs\Mono.Cecil.Rocks.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

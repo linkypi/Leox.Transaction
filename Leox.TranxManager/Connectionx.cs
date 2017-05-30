@@ -17,11 +17,18 @@ namespace Leox.TranxManager
         private SqlCommand _command { get; set; }
         private SqlTransaction _transaction { get; set; }
 
+        public SqlCommand SqlCommand
+        {
+            get { return _command; }
+        }
+
+        public  IsolationLevel IsolationLevel{ get; set; }
 
         //public Connectionx() { }
-        public Connectionx(string id)
+        public Connectionx(string id, IsolationLevel isolationLevel)
         {
             this.Id = id;
+            IsolationLevel = isolationLevel;
             _connection = new SqlConnection(_connectionString);
             _command = new SqlCommand(string.Empty, _connection);
         }
@@ -35,11 +42,11 @@ namespace Leox.TranxManager
                 //默认为15秒
                 //_connection.ConnectionTimeout = 15;
                 _connection.Open();
-                _transaction = _connection.BeginTransaction(IsolationLevel.ReadCommitted, Id.ToString());
+                _transaction = _connection.BeginTransaction(IsolationLevel, Id.ToString());
             }
             catch (Exception)
             {
-                
+                return false;
             }
           
             return true;

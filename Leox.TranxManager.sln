@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Leox.TranxManager", "Leox.TranxManager\Leox.TranxManager.csproj", "{3902422C-95B8-4927-A04C-36ECF6EBC527}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{0B16DBFB-4252-48AF-B173-B0978043A861}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{3902422C-95B8-4927-A04C-36ECF6EBC527}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3902422C-95B8-4927-A04C-36ECF6EBC527}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3902422C-95B8-4927-A04C-36ECF6EBC527}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B16DBFB-4252-48AF-B173-B0978043A861}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B16DBFB-4252-48AF-B173-B0978043A861}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B16DBFB-4252-48AF-B173-B0978043A861}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B16DBFB-4252-48AF-B173-B0978043A861}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
