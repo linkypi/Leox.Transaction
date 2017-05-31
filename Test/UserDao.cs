@@ -23,10 +23,10 @@ namespace Test
 
         private bool Update(int userid, bool increase, decimal balance)
         {
-            string sql = string.Format("update user set balance=balance{0}@balance where userid = @userid", increase ? "+" : "-");
+            string sql = string.Format("update [user] set balance=balance{0}@balance where id = @userid", increase ? "+" : "-");
             var balanceParam = new SqlParameter("@balance", SqlDbType.Decimal, 32);
             balanceParam.Value = balance;
-            var useridParams = new SqlParameter("@userid", SqlDbType.Int, userid);
+            var useridParams = new SqlParameter("@userid", SqlDbType.Int, 32);
             useridParams.Value = userid;
             SqlParameter[] paras = new SqlParameter[]{
                   balanceParam , useridParams

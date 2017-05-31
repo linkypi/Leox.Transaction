@@ -14,8 +14,11 @@ namespace Leox.TranxManager
             var command = Manager.GetSqlCommand();
             command.CommandText = sql;
             command.CommandType = System.Data.CommandType.Text;
-            command.Parameters.Clear();
-            command.Parameters.AddRange(parameters);
+            if (parameters != null)
+            {
+                command.Parameters.Clear();
+                command.Parameters.AddRange(parameters);
+            }
             return command.ExecuteNonQuery();
         }
 
@@ -24,8 +27,11 @@ namespace Leox.TranxManager
             var command = Manager.GetSqlCommand();
             command.CommandText = sql;
             command.CommandType = System.Data.CommandType.Text;
-            command.Parameters.Clear();
-            command.Parameters.AddRange(parameters);
+            if (parameters != null)
+            {
+                command.Parameters.Clear();
+                command.Parameters.AddRange(parameters);
+            }
             return command.ExecuteScalar();
         }
     }

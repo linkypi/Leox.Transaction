@@ -14,6 +14,7 @@ namespace Leox.TranxManager
     public class Manager:IDisposable
     {
         private static ConcurrentDictionary<string, Connectionx> _cache = new ConcurrentDictionary<string, Connectionx>();
+        private static ConcurrentDictionary<string, bool> _rollbacks = new ConcurrentDictionary<string, bool>();
         private static ThreadLocal<string> _threadLocal;
         private static System.Timers.Timer _timer;
 
@@ -72,38 +73,98 @@ namespace Leox.TranxManager
             return _cache[id].SqlCommand;
         }
 
-        public static void Commit(string id)
+        public static void Commit()
         {
-            if (!_cache.ContainsKey(id))
-                throw new Exception("内部错误: 连接已丢失.");
+            try
+            {
+                var id = _threadLocal.Value;
 
-            _cache[id].Commit();
+                if (_rollbacks.ContainsKey(id)) return;
 
-            Remove(id);
+                if (!_cache.ContainsKey(id))
+                    throw new Exception("内部错误: 连接已丢失.");
+
+                _cache[id].Commit();
+
+                Remove(id);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("commit take error: " + ex.Message + ". stack trace : " + ex.StackTrace);
+            }
         }
 
-        public static void RollBack(string id)
+        public static void End()
         {
-            if (!_cache.ContainsKey(id))
-                throw new Exception("内部错误: 连接已丢失.");
+            try
+            {
+                var id = _threadLocal.Value;
+                if (!_rollbacks.ContainsKey(id)) return;
 
-            _cache[id].RollBack();
+                int index = 0;
+                bool flag = false;
+                while (!_rollbacks.TryRemove(id, out flag))
+                {
+                    index++;
+                    Thread.Sleep(20);
+                    if (index > 3) break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("end error: " + ex.Message + ". stack trace : " + ex.StackTrace);
+            }
+        }
 
-            Remove(id);
+        public static void RollBack()
+        {
+            var id = _threadLocal.Value;
+            try
+            {
+                if (!_cache.ContainsKey(id))
+                    throw new Exception("内部错误: 连接已丢失.");
+
+                _cache[id].RollBack();
+
+                Remove(id);
+
+                int index = 0;
+                while (!_rollbacks.TryAdd(id, true))
+                {
+                    index++;
+                    Thread.Sleep(20);
+                    if (index > 3) break;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("rollback error: " + ex.Message + ". stack trace : " + ex.StackTrace);
+            }
+           
         }
 
         private static bool Add(string id, Connectionx connx)
         {
             if (_cache.ContainsKey(id)) return false;
 
-            _cache.AddOrUpdate(id, connx, null);
-            return true;
+            return _cache.TryAdd(id, connx);
         }
 
         public static bool Remove(string id)
         {
+            if (!_cache.ContainsKey(id)) return false;
+
             Connectionx connx;
-            var result = _cache.TryRemove(id,out connx);
+
+            int index = 0;
+            bool result = false;
+            while (!(result = _cache.TryRemove(id, out connx)))
+            {
+                index++;
+                Thread.Sleep(20);
+                if (index > 3) break;
+            }
+
             if (result)
             {
                 connx.Dispose();

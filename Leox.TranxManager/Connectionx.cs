@@ -10,7 +10,7 @@ namespace Leox.TranxManager
 {
     public class Connectionx : IDisposable
     {
-        private static readonly string _connectionString = System.Configuration.ConfigurationManager.AppSettings[""];
+        private static readonly string _connectionString = System.Configuration.ConfigurationManager.AppSettings["DbConnectionString"];
         public string Id { get; set; }
         public DateTime CreateTime { get; set; }
         private SqlConnection _connection { get; set; }
@@ -43,6 +43,7 @@ namespace Leox.TranxManager
                 //_connection.ConnectionTimeout = 15;
                 _connection.Open();
                 _transaction = _connection.BeginTransaction(IsolationLevel, Id.ToString());
+                _command.Transaction = _transaction;
             }
             catch (Exception)
             {

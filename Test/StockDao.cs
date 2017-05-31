@@ -12,10 +12,13 @@ namespace Test
     {
         public bool Decrease(int userid, int count)
         {
-            string sql = "update stock set count=count-@count where userid = @userid";
+            string sql = "update stock set count=count-@count where user_id = @userid";
+            var countParam = new SqlParameter("@count", System.Data.SqlDbType.Int, 32);
+            var useridParam = new SqlParameter("@userid", System.Data.SqlDbType.Int, 32);
+            countParam.Value = count;
+            useridParam.Value = userid;
             SqlParameter[] paras = new SqlParameter[]{
-             new SqlParameter("@count",System.Data.SqlDbType.Int,count),
-             new SqlParameter("@userid",System.Data.SqlDbType.Int,userid)
+                useridParam,countParam
             };
             return SQLHelper.ExecuteNonQuery(sql, paras) > 0;
         }
