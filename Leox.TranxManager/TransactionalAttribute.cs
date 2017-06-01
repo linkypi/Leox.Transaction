@@ -33,8 +33,6 @@ namespace Leox.TranxManager
         public override void OnEnd(MethodAspectArgs args)
         {
             Console.WriteLine("tranx end.");
-            //Manager.Commit();
-            Manager.End();
         }
 
         public override void OnException(MethodAspectArgs args)

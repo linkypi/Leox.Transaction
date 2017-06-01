@@ -16,6 +16,7 @@ namespace Test
             Console.WriteLine(" --- start --- ");
             try
             {
+                Console.ReadKey();
                 TakeOrder();
             }
             catch (Exception ex)

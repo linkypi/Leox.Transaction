@@ -14,7 +14,6 @@ namespace Leox.TranxManager
     public class Manager:IDisposable
     {
         private static ConcurrentDictionary<string, Connectionx> _cache = new ConcurrentDictionary<string, Connectionx>();
-        private static ConcurrentDictionary<string, bool> _rollbacks = new ConcurrentDictionary<string, bool>();
         private static ThreadLocal<string> _threadLocal;
         private static System.Timers.Timer _timer;
 
@@ -58,6 +57,7 @@ namespace Leox.TranxManager
             {
                 Add(id.ToString(), conn);
                 _threadLocal.Value = id;
+                Console.WriteLine("id : " + id);
                 return true;
             }
 
@@ -67,20 +67,28 @@ namespace Leox.TranxManager
 
         public static SqlCommand GetSqlCommand() {
 
-            var id = _threadLocal.Value;
+            var id = GetId();
             if (!_cache.ContainsKey(id))
                 throw new Exception("内部错误: 连接已丢失.");
             return _cache[id].SqlCommand;
+        }
+
+        private static string GetId()
+        {
+            var id = _threadLocal.Value;
+            if (string.IsNullOrEmpty(id))
+            {
+                Console.WriteLine("id is null when get sqlcommand.");
+                throw new Exception("内部错误: 连接已丢失.");
+            }
+            return id;
         }
 
         public static void Commit()
         {
             try
             {
-                var id = _threadLocal.Value;
-
-                if (_rollbacks.ContainsKey(id)) return;
-
+                var id = GetId();
                 if (!_cache.ContainsKey(id))
                     throw new Exception("内部错误: 连接已丢失.");
 
@@ -94,31 +102,9 @@ namespace Leox.TranxManager
             }
         }
 
-        public static void End()
-        {
-            try
-            {
-                var id = _threadLocal.Value;
-                if (!_rollbacks.ContainsKey(id)) return;
-
-                int index = 0;
-                bool flag = false;
-                while (!_rollbacks.TryRemove(id, out flag))
-                {
-                    index++;
-                    Thread.Sleep(20);
-                    if (index > 3) break;
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("end error: " + ex.Message + ". stack trace : " + ex.StackTrace);
-            }
-        }
-
         public static void RollBack()
         {
-            var id = _threadLocal.Value;
+            var id = GetId();
             try
             {
                 if (!_cache.ContainsKey(id))
@@ -127,14 +113,6 @@ namespace Leox.TranxManager
                 _cache[id].RollBack();
 
                 Remove(id);
-
-                int index = 0;
-                while (!_rollbacks.TryAdd(id, true))
-                {
-                    index++;
-                    Thread.Sleep(20);
-                    if (index > 3) break;
-                }
             }
             catch (Exception ex)
             {
