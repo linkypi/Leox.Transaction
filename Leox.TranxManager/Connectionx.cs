@@ -8,7 +8,7 @@ using System.Data.SqlClient;
 
 namespace Leox.TranxManager
 {
-    public class Connectionx : IDisposable
+    internal sealed class Connectionx : IDisposable
     {
         private static readonly string _connectionString = System.Configuration.ConfigurationManager.AppSettings["DbConnectionString"];
         public string Id { get; set; }
@@ -35,8 +35,6 @@ namespace Leox.TranxManager
 
         public bool BeginTransction()
         {
-            if (_connection == null || _connection.State == ConnectionState.Broken)
-                return false;
             try
             {
                 //默认为15秒
@@ -47,7 +45,7 @@ namespace Leox.TranxManager
             }
             catch (Exception)
             {
-                return false;
+                throw;
             }
           
             return true;

@@ -27,7 +27,7 @@ namespace Leox.TranxManager
             string id = Guid.NewGuid().ToString().Replace("-", "");
             this.ExceptionStrategy = Aop.ExceptionStrategy.UnThrow;
 
-            Manager.NewTransaction(id, IsolationLevel);
+            Manager.BeginTransaction(id, IsolationLevel);
         }
 
         public override void OnEnd(MethodAspectArgs args)
@@ -37,7 +37,7 @@ namespace Leox.TranxManager
 
         public override void OnException(MethodAspectArgs args)
         {
-            Console.WriteLine("tranx exception.");
+            Console.WriteLine("tranx exception." + args.Exception.Message);
             Manager.RollBack();
         }
 

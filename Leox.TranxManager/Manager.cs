@@ -40,24 +40,14 @@ namespace Leox.TranxManager
             }
         }
 
-        public Connectionx this[int index]
-        {
-            get
-            {
-                if (_cache.ContainsKey(index.ToString()))
-                    return _cache[index.ToString()];
-                return null;
-            }
-        }
-
-        public static bool NewTransaction(string id, IsolationLevel isolationLevel)
+        public static bool BeginTransaction(string id, IsolationLevel isolationLevel)
         {
             var conn = new Connectionx(id, isolationLevel);
             if (conn.BeginTransction())
             {
                 Add(id.ToString(), conn);
                 _threadLocal.Value = id;
-                Console.WriteLine("id : " + id);
+                Console.WriteLine("tranx had started, connection id : " + id);
                 return true;
             }
 
@@ -71,17 +61,6 @@ namespace Leox.TranxManager
             if (!_cache.ContainsKey(id))
                 throw new Exception("内部错误: 连接已丢失.");
             return _cache[id].SqlCommand;
-        }
-
-        private static string GetId()
-        {
-            var id = _threadLocal.Value;
-            if (string.IsNullOrEmpty(id))
-            {
-                Console.WriteLine("id is null when get sqlcommand.");
-                throw new Exception("内部错误: 连接已丢失.");
-            }
-            return id;
         }
 
         public static void Commit()
@@ -121,6 +100,17 @@ namespace Leox.TranxManager
            
         }
 
+        private static string GetId()
+        {
+            var id = _threadLocal.Value;
+            if (string.IsNullOrEmpty(id))
+            {
+                Console.WriteLine("id is null when get sqlcommand.");
+                throw new Exception("内部错误: 连接已丢失.");
+            }
+            return id;
+        }
+
         private static bool Add(string id, Connectionx connx)
         {
             if (_cache.ContainsKey(id)) return false;
@@ -128,7 +118,7 @@ namespace Leox.TranxManager
             return _cache.TryAdd(id, connx);
         }
 
-        public static bool Remove(string id)
+        private static bool Remove(string id)
         {
             if (!_cache.ContainsKey(id)) return false;
 

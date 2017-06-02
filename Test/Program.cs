@@ -40,10 +40,10 @@ namespace Test
 
             StockDao stockDao = new StockDao();
             stockDao.Decrease(2,count);
-            throw new Exception("stock is not enough.");
+            //throw new Exception("stock is not enough.");
         }
-         [Transactional]
-        public static void TakeOrder123()
+         //[Transactional]
+        public static void TakeOrder127()
         {
             Type arg_22_0 = typeof(Program);
             string arg_22_1 = "TakeOrder";
@@ -59,7 +59,7 @@ namespace Test
             }
             try
             {
-                //Program._TakeOrder_();
+                Program._TakeOrder_33();
                 foreach (MethodAspect current in mAList)
                 {
                     current.OnSuccess(methodAspectArgs);
